@@ -41,10 +41,10 @@ pub fn Operation(comptime T: type) type {
             }
         }
 
-        fn sortAsc(context: void, lhs: Self, rhs: Self) bool {
-            _ = context;
-            return lhs.tnew_id > rhs.tnew_id;
-        }
+        // fn sortAsc(context: void, lhs: Self, rhs: Self) bool {
+        //     _ = context;
+        //     return lhs.tnew_id > rhs.tnew_id;
+        // }
     };
 }
 
@@ -66,9 +66,15 @@ pub fn Tape(comptime T: type) type {
         pub fn backwards(self: *Self, allocator: std.mem.Allocator) std.mem.Allocator.Error!HashMap(usize, []T) {
             var grads = HashMap(usize, []T).init(allocator);
             var ops = self.operations.toOwnedSlice();
-            std.sort.sort(Operation(T), ops, {}, Operation(T).sortAsc);
-            for (ops) |op| {
-                try op.do_backwards(&grads, allocator);
+            // std.sort.sort(Operation(T), ops, {}, Operation(T).sortAsc);
+            var i: usize = ops.len - 1;
+            while (i >= 0) {
+                try ops[i].do_backwards(&grads, allocator);
+                if (i == 0) {
+                    break;
+                } else {
+                    i -= 1;
+                }
             }
             allocator.free(ops);
             return grads;

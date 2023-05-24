@@ -5,8 +5,13 @@ pub fn build(b: *std.build.Builder) void {
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
     const mode = b.standardReleaseOptions();
 
+    // const openblas_include_dir = "/home/olabian/opt/openblas/include";
+    // const openblas_lib_dir = "/home/olabian/opt/openblas/lib";
+
     const lib = b.addStaticLibrary("dfdz", "src/main.zig");
     lib.setBuildMode(mode);
+    // lib.linkSystemLibrary("openblas");
+    lib.linkSystemLibrary("/nix/store/d6aabmvg0avs71shmxjnvln94sprqg4w-openblas-0.3.20/lib");
     lib.install();
 
     const main_tests = b.addTest("src/main.zig");
